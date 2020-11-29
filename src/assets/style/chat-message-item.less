@@ -1,0 +1,101 @@
+
+.chat-message-item__container {
+  >.chat-message-item__date-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0px;
+    >.chat-message-item__date-time {
+      padding: 2px 5px;
+      border-radius: 2px;
+      font-size: 12px;
+      color: #000;
+      background: rgba(230, 230, 230, .5);
+    }
+  }
+  >.chat-message-item__all-content {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    margin: 5px 0px;
+    >.chat-message-item__text-wrapper {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      border-radius: 5px;
+      min-height: 24px;
+      max-width: 231px;
+      padding: 8px 8px;
+      .chat-message-item__text {
+        user-select: auto;
+        font-size: 16px;
+        letter-spacing: .5px;
+        word-break: break-all;
+        line-height: 20px;
+      }
+      .chat-message-item__angle {
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        border-radius: 2px;
+        transform-origin: center center;
+      }
+    }
+    >.chat-message-item__image-wrapper {
+      display: flex;
+      .chat-message-item__image {
+        max-width: 100px;
+        border-radius: 5px;
+      }
+    }
+    >.chat-message-item__avatar-wrapper {
+      margin: 0;
+      padding: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 5px;
+      overflow: hidden;
+      >.chat-message-item__avatar {
+        width: 40px;
+      }
+    }
+    &::after {
+      content: '';
+      clear: both;
+    }
+  }
+}
+
+.self {
+  >.chat-message-item__text-wrapper {
+    position: relative;
+    margin-right: 10px;
+    background-color: @bg-chat-color;
+    >.chat-message-item__angle {
+      right: 0;
+      top: 20px;
+      background: @bg-chat-color;
+      transform: translate(49%, -50%) rotate(45deg);
+    }
+  }
+  >.chat-message-item__image-wrapper {
+    margin-right: 10px;
+  }
+}
+.other {
+  flex-flow: row-reverse;
+  >.chat-message-item__text-wrapper {
+    margin-left: 10px;
+    position: relative;
+    background-color: #ffffff;
+    >.chat-message-item__angle {
+      left: 0;
+      top: 20px;
+      background: #ffffff;
+      transform: translate(-49%, -50%) rotate(45deg);
+    }
+  }
+  >.chat-message-item__image-wrapper {
+    margin-left: 10px;
+  }
+}

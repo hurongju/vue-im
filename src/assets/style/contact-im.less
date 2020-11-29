@@ -1,0 +1,29 @@
+.contact-im__container {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 50px;
+  overflow: auto;
+  user-select: none;
+  background: #f7f8fa;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  .contact-im__add-friend {
+    align-items: center;
+    &::after {
+      border: 0px;
+    }
+  }
+  .contact-im__cell-item {
+    align-items: center;
+    .van-icon__image {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+    }
+  }
+  /deep/ .van-index-anchor--sticky, /deep/ .van-index-bar__index--active {
+    color: @theme-color;
+  }
+}

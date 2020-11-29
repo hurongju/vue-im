@@ -1,0 +1,28 @@
+.chat-im__container {
+  width: 100%;
+  position: absolute;
+  top: 46px;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  background: #f7f8fa;
+  >.chat-im__scroller {
+    flex: 1;
+  }
+  .chat-im__list-layout {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    transition: padding .3s;
+    padding: 0 10px 0 10px;
+    >.chat-im__list-view {
+      list-style: none;
+      padding: 0;
+      position: relative;
+      overflow: auto;
+    }
+    >.chat-im__list-view:last-child /deep/ .chat-message-item__all-content{
+      margin-bottom: 10px;
+    }
+  }
+}

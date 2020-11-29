@@ -1,0 +1,23 @@
+.login-im__container {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  .login-im__form {
+    margin-top: -100px;
+    width: 80%;
+    /deep/ .van-field__label {
+      width: 50px !important;
+    }
+    /deep/ .van-cell {
+      background: transparent;
+    }
+    .login-im__button {
+      margin: 16px;
+    }
+  }
+}

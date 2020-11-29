@@ -1,0 +1,14 @@
+.room-im__container {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 50px;
+  overflow: auto;
+  user-select: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+/deep/ .im-card__container:nth-last-child(1) >.im-card__right::after {
+  border-bottom: 0px solid #ebedf0;
+}

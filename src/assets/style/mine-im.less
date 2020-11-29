@@ -1,0 +1,41 @@
+.mine-im__container {
+  position: absolute;
+  top: 0;
+  bottom: 50px;
+  width: 100%;
+  background: #f7f8fa;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -100px;
+  .mine-im__user {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    .mine-im__image {
+      width: 50px;
+      border-radius: 50%;
+    }
+    .mine-im__name {
+      font-size: 14px;
+      margin-top: 10px;
+    }
+  }
+  .mine-im__center {
+    width: 82px;
+    height: 22px;
+    font-size: 14px;
+    margin-top: 10px;
+    background: transparent;
+    color: #000;
+    text-align: center;
+    line-height: 22px;
+    border-radius: 11px;
+    transition: all .1s;
+    &:active {
+      color: #333;
+    }
+  }
+}
