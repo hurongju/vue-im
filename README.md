@@ -14,3 +14,6 @@ npm run serve
 
 ## 线上预览地址（切换至手机模式下预览）
 https://im.goldzy.top/
+
+## android测试包安装
+https://im.goldzy.top/app-debug.apk
