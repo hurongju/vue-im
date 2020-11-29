@@ -1,11 +1,7 @@
 let prefixUrl = ''
 
 if (__STG__ || __PRD__) {
-  // prefixUrl = 'http://172.31.6.84:3000'
-  // prefixUrl = 'http://192.168.0.100:8080'
-  // prefixUrl = 'http://49.235.66.125:3001'
-  // prefixUrl = 'http://49.235.66.125:3002'
-  prefixUrl = 'http://im.goldzy.top'
+  // prefixUrl = 'http://your.hostname.com'
 }
 
 export default {
