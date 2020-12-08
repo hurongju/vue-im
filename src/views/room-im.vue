@@ -10,6 +10,8 @@
       :date-time="item.lastMsgTime"
       :date-format-type="formatType"
       :message="item.lastMsg"
+      :menu-options="getMenuOptions(item)"
+      :class="{isTop: item.isTop}"
     />
   </div>
 </template>
@@ -39,6 +41,41 @@ export default {
   mounted () {
   },
   methods: {
+    getMenuOptions (item) {
+      return {
+        width: Math.round((window.innerWidth / 375 * 120) || 120),
+        height: Math.round((window.innerWidth / 375 * 60) || 60),
+        data: [
+          item.unReadNum > 0 ? { id: cons.contextmenu.MARK_AS_READ, name: '标为已读' } : { id: cons.contextmenu.MARK_AS_UNREAD, name: '标为未读' },
+          item.isTop ? { id: cons.contextmenu.UNSTICK, name: '取消置顶' } : { id: cons.contextmenu.TOP, name: '置顶该聊天' },
+          { id: cons.contextmenu.DELETE, name: '删除该聊天' }
+        ],
+        handler: (id, el) => {
+          const index = Array.prototype.indexOf.call(el.parentNode.childNodes, el)
+          switch (parseInt(id)) {
+            case cons.contextmenu.TOP:
+              this.roomList[index].isTop = 1
+              this.roomList[index].setTopTime = Date.now()
+              this.$store.dispatch('room/setRoomList', this.roomList, { root: true })
+              break
+            case cons.contextmenu.DELETE:
+              this.$store.dispatch('room/removeRoom', { roomId: this.roomList[index].roomId }, { root: true })
+              break
+            case cons.contextmenu.UNSTICK:
+              this.roomList[index].isTop = 0
+              this.roomList[index].setTopTime = Date.now()
+              this.$store.dispatch('room/setRoomList', this.roomList, { root: true })
+              break
+            case cons.contextmenu.MARK_AS_READ:
+              this.$store.dispatch('room/updateUnReadMsg', { num: 0, roomId: this.roomList[index].roomId })
+              break
+            case cons.contextmenu.MARK_AS_UNREAD:
+              this.$store.dispatch('room/updateUnReadMsg', { num: 1, roomId: this.roomList[index].roomId })
+              break
+          }
+        }
+      }
+    },
     redirectChat (item) {
       if (isNaN(item.roomId)) {
         this.$store.dispatch('room/updateUnReadMsg', { num: 0, roomId: item.roomId })
@@ -60,6 +97,17 @@ export default {
           } catch (e) {
             value.nickname = value.name
           }
+        }
+      })
+      list.sort((a, b) => {
+        if (a.isTop > b.isTop) {
+          return b.isTop - a.isTop
+        }
+        if (a.isTop === b.isTop && a.isTop === 1) {
+          return b.setTopTime - a.setTopTime
+        }
+        if (a.isTop === b.isTop && a.isTop === 0) {
+          return b.lastMsgTime - a.lastMsgTime
         }
       })
       return list

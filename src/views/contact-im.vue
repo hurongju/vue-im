@@ -15,6 +15,8 @@
           :title="item_child.name"
           v-for="item_child in item.list" :key="item_child.uid"
           @click="goToChat(item_child)"
+          v-menu="menuOptions"
+          :data-id="item_child.uid"
         />
       </div>
     </van-index-bar>
@@ -23,7 +25,7 @@
 
 <script>
 import { IndexBar, IndexAnchor, Cell, Icon } from 'vant'
-import handleFriendList from '@/assets/js/handle-friend-list'
+import { handleFriendList } from '@/assets/js/handler'
 import { mapState } from 'vuex'
 
 export default {
@@ -36,7 +38,14 @@ export default {
   },
   data () {
     return {
-      list: []
+      list: [],
+      menuOptions: {
+        data: [
+          { id: 1, name: '设置备注' }
+        ],
+        handler: (id, el) => {
+        }
+      }
     }
   },
   computed: {
