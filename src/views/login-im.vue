@@ -76,21 +76,21 @@ export default {
       }
     },
     verify () {
-      // const name = this.username.trim()
-      // if (name.length > 50) {
-      //   this.errMsg = '用户名不能多于50位字符！'
-      //   return false
-      // }
-      // if (name.slice(0, 1).toUpperCase().charCodeAt() < 65 ||
-      //   name.slice(0, 1).toUpperCase().charCodeAt() > 90
-      // ) {
-      //   this.errMsg = '用户名只能以字母开头！'
-      //   return false
-      // }
-      // if (this.password.length < 6) {
-      //   this.errMsg = '密码不能低于6位字符！'
-      //   return false
-      // }
+      const name = this.username.trim()
+      if (name.length > 50) {
+        this.errMsg = '用户名不能多于50位字符！'
+        return false
+      }
+      if (name.slice(0, 1).toUpperCase().charCodeAt() < 65 ||
+        name.slice(0, 1).toUpperCase().charCodeAt() > 90
+      ) {
+        this.errMsg = '用户名只能以字母开头！'
+        return false
+      }
+      if (this.password.length < 6) {
+        this.errMsg = '密码不能低于6位字符！'
+        return false
+      }
       return true
     }
   }

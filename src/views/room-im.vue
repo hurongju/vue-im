@@ -20,6 +20,7 @@
 import { mapGetters } from 'vuex'
 import Card from '@/components/im-card'
 import cons from '@/constants'
+import { Dialog } from 'vant'
 
 export default {
   name: 'RoomIm',
@@ -59,7 +60,16 @@ export default {
               this.$store.dispatch('room/setRoomList', this.roomList, { root: true })
               break
             case cons.contextmenu.DELETE:
-              this.$store.dispatch('room/removeRoom', { roomId: this.roomList[index].roomId }, { root: true })
+              Dialog.confirm({
+                title: '确定要删除该聊天吗',
+                message: '',
+                beforeClose: (action, done) => {
+                  if (action === 'confirm') {
+                    this.$store.dispatch('room/removeRoom', { roomId: this.roomList[index].roomId }, { root: true })
+                  }
+                  done(action)
+                }
+              }).catch(rej => {})
               break
             case cons.contextmenu.UNSTICK:
               this.roomList[index].isTop = 0

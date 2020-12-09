@@ -15,8 +15,8 @@
   },
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build && sh build.sh",
-    "build:stg": "vue-cli-service build --mode staging && sh build.sh",
+    "build": "vue-cli-service build",
+    "build:stg": "vue-cli-service build --mode staging",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
