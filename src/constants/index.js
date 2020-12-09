@@ -1,9 +1,11 @@
 import url from './url'
 import input from './input'
+import contextmenu from './contextmenu'
 
 export default {
   url, // api接口URL
-  input,
+  input, // 聊天界面文本框配置
+  contextmenu, // 自定义contextmenu配置
   ROOM_LIST_KEY: '__room_list__', // 获取本地群列表key
   TOKEN_KEY: '__json_web_token_key__', // 获取token的key
   dateFormatType: { // 日期格式类型

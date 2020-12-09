@@ -6,12 +6,17 @@ import store from './store'
 import 'amfe-flexible'
 import './assets/js/bus'
 import lazyload from './plugins/lazy-load'
+import menuSet from './plugins/contextmenu'
 import format from '@/filters/format'
 import './assets/iconfont/iconfont.css'
 
 Vue.use(lazyload, {
   placeholder: require('./assets/img/placeholder.png'), // 占位图，防止聊天页面加载图片页面高度明显抖动
   debug: true // 是否开启缓存图片打印log，生产关闭
+})
+
+Vue.use(menuSet, {
+  bottom: 50
 })
 
 Vue.config.productionTip = false

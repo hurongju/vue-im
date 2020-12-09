@@ -1,4 +1,4 @@
-let prefixUrl = ''
+const prefixUrl = ''
 
 if (__STG__ || __PRD__) {
   // prefixUrl = 'http://your.hostname.com'

@@ -1,6 +1,6 @@
 <template>
   <!-- 公共卡片组件 im-card -->
-  <div class="im-card__container">
+  <div class="im-card__container" v-menu="menuOptions">
     <div class="im-card__left">
       <img class="im-card__avatar" :src="avatar || defaultAvatar" alt="头像">
       <span class="im-card__tips--unread-num" v-if="unread > 0">{{ unReadNumStr}}</span>
@@ -47,7 +47,10 @@ export default {
       required: true
     },
     message: String,
-    desc: String
+    desc: String,
+    menuOptions: {
+      type: Object
+    }
   },
   computed: {
     ...mapState(['defaultAvatar']),

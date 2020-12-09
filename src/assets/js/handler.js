@@ -2,7 +2,7 @@
  * handleFriendList 处理联系人列表
  * @param {Array} data 联系人列表
  */
-export default function handleFriendList (data) {
+export function handleFriendList (data) {
   if (!(data instanceof Array)) {
     return []
   }
