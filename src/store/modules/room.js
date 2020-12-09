@@ -1,4 +1,4 @@
-import { addRoom, getRoomList, updateUnReadMsg, updateLastMsg, removeRoom } from '@/assets/js/room'
+import { addRoom, getRoomList, setRoomList, updateUnReadMsg, updateLastMsg, removeRoom } from '@/assets/js/room'
 
 const state = () => ({
   roomList: [], // 会话列表
@@ -23,7 +23,11 @@ const actions = {
     removeRoom(rootGetters.username, roomId)
     commit('SET_ROOM_LIST', getRoomList(rootGetters.username))
   },
-  setRoomList ({ commit, rootGetters }) { // 设置房间列表
+  getRoomList ({ commit, rootGetters }) { // 获取房间列表
+    commit('SET_ROOM_LIST', getRoomList(rootGetters.username))
+  },
+  setRoomList ({ commit, rootGetters }, data) { // 设置房间列表
+    setRoomList(rootGetters.username, data)
     commit('SET_ROOM_LIST', getRoomList(rootGetters.username))
   },
   updateUnReadMsg ({ commit, rootGetters }, { num, roomId, type }) { // 房间消息已读

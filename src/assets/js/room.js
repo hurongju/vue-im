@@ -12,6 +12,15 @@ export function getRoomList (prefix) {
 }
 
 /**
+ * setRoomList 设置群列表
+ */
+export function setRoomList (prefix, data) {
+  if (data instanceof Array) {
+    localStorage.setItem(`${prefix}${cons.ROOM_LIST_KEY}`, JSON.stringify(data))
+  }
+}
+
+/**
  * addRoom 添加群
  */
 export function addRoom (prefix, room) {
@@ -76,7 +85,7 @@ export function updateLastMsg (prefix, { lastMsg, roomId, lastMsgTime, name }) {
       lastMsg: lastMsg,
       name: name,
       nickname: null,
-      is_top: 0,
+      isTop: 0,
       unReadNum: 0
     })
     return

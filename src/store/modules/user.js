@@ -25,7 +25,7 @@ const actions = {
           commit('SET_AVATAR_URL', avatarUrl)
           localStorage.setItem(cons.TOKEN_KEY, token)
           dispatch('socket/createSocket', { isRegister: isRegister }, { root: true })
-          dispatch('room/setRoomList', null, { root: true })
+          dispatch('room/getRoomList', null, { root: true })
           resolve(res)
         } else {
           reject(new Error(res.data.message))
