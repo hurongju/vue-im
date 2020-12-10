@@ -29,7 +29,7 @@ instance.interceptors.response.use(function (response) {
   switch (error.response.status) {
     case 401:
       localStorage.removeItem(cons.TOKEN_KEY)
-      Toast('用户令牌校验失败')
+      Toast('登录已过期')
       Router.push({ path: '/login-im' })
       break
     case 500:

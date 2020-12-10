@@ -10,6 +10,7 @@ function setMenu ({ el, menuOptions, bottom }) {
   }
   let timeout = null
   el.touchstartHandler = (e) => {
+    e.stopPropagation()
     timeout = setTimeout(() => {
       el.style.background = '#ebedf0'
       addMenu([e.targetTouches[0].pageX, e.targetTouches[0].pageY], menuOptions, bottom, el)
@@ -55,14 +56,16 @@ function computedPosition ([x, y], width, height, bottom) {
 function addMenu (pos, menuOptions, bottom, el) {
   const width = menuOptions.width || 120
   const height = menuOptions.height || 60
+  const paddingLeft = Math.round((window.innerWidth / 375 * 20)) || 20
+  const fontSize = Math.round((window.innerWidth / 375 * 16)) || 16
   let menu = document.createElement('div')
   const menuDialogClass = 'vue-contextmenu__dialog'
   const [left, top, originX, originY] = computedPosition(pos, width, height * menuOptions.data.length, bottom)
   menu.style.cssText = 'width: 100%;height: 100vh;position: fixed;z-index: 9999;user-select: none;'
   menu.setAttribute('class', menuDialogClass)
-  let str = `<div class="vue-contextmenu__content" style="transform-origin: ${originX} ${originY};position: absolute;left: ${left}px;top: ${top}px;box-shadow: 1px 1px 10px #aaa;background: #fff;transform: scale(0);transition: all .2s;">`
+  let str = `<div class="vue-contextmenu__content" style="font-size: ${fontSize}px;transform-origin: ${originX} ${originY};position: absolute;left: ${left}px;top: ${top}px;box-shadow: 1px 1px 10px #aaa;background: #fff;transform: scale(0);transition: all .2s;">`
   menuOptions.data.forEach(val => {
-    str += `<div class="vue-contextmenu__content-item" data-id="${val.id}" style="width: ${width}px;height: ${height}px;font-size: 16px;color: #000;padding-left: 20px;box-sizing: border-box;line-height: ${height}px;">${val.name}</div>`
+    str += `<div class="vue-contextmenu__content-item" data-id="${val.id}" style="width: ${width}px;height: ${height}px;color: #000;box-sizing: border-box;padding-left: ${paddingLeft}px;line-height: ${height}px;">${val.name}</div>`
   })
   str += '</div>'
   menu.innerHTML = str

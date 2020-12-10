@@ -42,10 +42,11 @@
       }
     }
     >.chat-message-item__image-wrapper {
-      display: flex;
       .chat-message-item__image {
         max-width: 100px;
         border-radius: 5px;
+        height: auto;
+        vertical-align: top;
       }
     }
     >.chat-message-item__avatar-wrapper {
@@ -57,6 +58,7 @@
       overflow: hidden;
       >.chat-message-item__avatar {
         width: 40px;
+        object-fit: fill;
       }
     }
     &::after {
