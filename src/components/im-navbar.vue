@@ -2,7 +2,7 @@
   <!-- 导航组件 im-navbar -->
   <van-nav-bar :title="title" left-text="" left-arrow @click-left="onClickLeft">
     <template #left>
-      <van-icon name="arrow-left" color="#000" size="20" />
+      <van-icon name="arrow-left" color="#000" />
     </template>
   </van-nav-bar>
 </template>
@@ -37,5 +37,8 @@ export default {
   /deep/ .van-nav-bar__title {
     font-size: 16px;
     font-weight: 400;
+  }
+  /deep/ .van-icon-arrow-left {
+    font-size: 20px;
   }
 </style>

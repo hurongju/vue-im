@@ -18,10 +18,10 @@ function convertEmoji (message) {
     const idx = indexOfEmoji(val)
     if (~idx) {
       const el = document.createElement('div')
-      const width = window.innerWidth / 375 * 20
-      const height = window.innerWidth / 375 * 20
-      const margin = window.innerWidth / 375 * 1
-      el.setAttribute('style', `display: inline-block;width: ${width}px;height: ${height}px;vertical-align: bottom;margin-right: ${margin}px;
+      const width = 20 / 37.5
+      const height = 20 / 37.5
+      const margin = 1 / 37.5
+      el.setAttribute('style', `display: inline-block;width: ${width}rem;height: ${height}rem;vertical-align: bottom;margin-right: ${margin}rem;
       background: url(${require('../../assets/img/emoji.png')});background-size: 1100% 1000%;user-select: none;
       background-repeat: no-repeat;background-position: ${computedPos(idx)}`)
       return elementToStr(el)

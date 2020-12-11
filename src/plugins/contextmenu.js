@@ -13,7 +13,9 @@ function setMenu ({ el, menuOptions, bottom }) {
     e.stopPropagation()
     timeout = setTimeout(() => {
       el.style.background = '#ebedf0'
-      addMenu([e.targetTouches[0].pageX, e.targetTouches[0].pageY], menuOptions, bottom, el)
+      // 获取根元素的fontSize将长按的位置px转为rem
+      const fontSize = parseFloat(document.documentElement.style.fontSize)
+      addMenu([e.targetTouches[0].pageX / fontSize, e.targetTouches[0].pageY / fontSize], menuOptions, bottom, el)
     }, 700)
   }
   el.touchendHandler = () => {
@@ -29,16 +31,21 @@ function setMenu ({ el, menuOptions, bottom }) {
 
 /**
  * 计算menu位置和tansform参数
- * @param {Array[Number x, Number y]} - 事件触发的X, Y
- * @param {Number} length - 菜单列表长度
- * @param {Number} bottom - 底部屏蔽区域高度
+ * @param {Array[Number x, Number y]} - 事件触发的X, Y(单位rem)
+ * @param {Number} width - 菜单列表宽度(rem)
+ * @param {Number} height - 菜单列表长度(rem)
+ * @param {Number} bottom - 底部屏蔽区域高度(rem)
  * @return {Array[Number a, Number b, String c, String d]} - 菜单定位位置 left: a; top: b -- transform-origin: c d
  */
 function computedPosition ([x, y], width, height, bottom) {
+  // 获取根元素的fontSize将长按的位置px转为rem
+  const fontSize = parseFloat(document.documentElement.style.fontSize)
+  const widowWidth = window.innerWidth / fontSize
+  const widowHeight = window.innerHeight / fontSize
   // 计算x是否超出page宽度的一半
-  const isLeft = x > window.innerWidth / 2 ? -1 : 0
-  let isTop = y > (window.innerHeight - bottom) / 2 ? -1 : 0
-  if (window.innerHeight - bottom - y < height) {
+  const isLeft = x > widowWidth / 2 ? -1 : 0
+  let isTop = y > (widowHeight - bottom) / 2 ? -1 : 0
+  if (widowHeight - bottom - y < height) {
     isTop = -1
   }
   x = x + isLeft * width
@@ -54,18 +61,18 @@ function computedPosition ([x, y], width, height, bottom) {
  * @param {Element} el 触发事件元素
  */
 function addMenu (pos, menuOptions, bottom, el) {
-  const width = menuOptions.width || 120
-  const height = menuOptions.height || 60
-  const paddingLeft = Math.round((window.innerWidth / 375 * 20)) || 20
-  const fontSize = Math.round((window.innerWidth / 375 * 16)) || 16
+  const width = 120 / 37.5 // 菜单宽度(rem)
+  const height = 60 / 37.5 // 菜单item高度(rem)
+  const paddingLeft = 20 / 37.5 // 菜单作左内边距(rem)
+  const fontSize = 16 / 37.5 // 菜单文字大小(rem)
   let menu = document.createElement('div')
   const menuDialogClass = 'vue-contextmenu__dialog'
   const [left, top, originX, originY] = computedPosition(pos, width, height * menuOptions.data.length, bottom)
   menu.style.cssText = 'width: 100%;height: 100vh;position: fixed;z-index: 9999;user-select: none;'
   menu.setAttribute('class', menuDialogClass)
-  let str = `<div class="vue-contextmenu__content" style="font-size: ${fontSize}px;transform-origin: ${originX} ${originY};position: absolute;left: ${left}px;top: ${top}px;box-shadow: 1px 1px 10px #aaa;background: #fff;transform: scale(0);transition: all .2s;">`
+  let str = `<div class="vue-contextmenu__content" style="font-size: ${fontSize}rem;transform-origin: ${originX} ${originY};position: absolute;left: ${left}rem;top: ${top}rem;box-shadow: 1px 1px 10px #aaa;background: #fff;transform: scale(0);transition: all .2s;">`
   menuOptions.data.forEach(val => {
-    str += `<div class="vue-contextmenu__content-item" data-id="${val.id}" style="width: ${width}px;height: ${height}px;color: #000;box-sizing: border-box;padding-left: ${paddingLeft}px;line-height: ${height}px;">${val.name}</div>`
+    str += `<div class="vue-contextmenu__content-item" data-id="${val.id}" style="width: ${width}rem;height: ${height}rem;color: #000;box-sizing: border-box;padding-left: ${paddingLeft}rem;line-height: ${height}rem;">${val.name}</div>`
   })
   str += '</div>'
   menu.innerHTML = str

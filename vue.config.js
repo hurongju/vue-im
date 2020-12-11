@@ -14,6 +14,12 @@ console.log('__STG__ :>> ', __STG__);
 console.log('__DEV__ :>> ', __DEV__);
 console.log('__PRD__ :>> ', __PRD__);
 
+/**
+ * 演示接口地址
+ * 接口源码地址https://github.com/hurongju/vue-im-server
+ */
+const targetUrl = 'https://im.goldzy.top'
+
 module.exports = {
   publicPath: './',
   devServer: {
@@ -23,17 +29,17 @@ module.exports = {
     port: 9000,
     proxy: {
       '/static': {
-        target: 'http://localhost:8080',
+        target: targetUrl,
         ws: true,
         changeOrigin: true
       },
       '/api': {
-        target: 'http://localhost:8080',
+        target: targetUrl,
         ws: true,
         changeOrigin: true
       },
       '/socket.io': {
-        target: 'http://localhost:8080',
+        target: targetUrl,
         ws: true,
         changeOrigin: true
       }

@@ -1,15 +1,3 @@
-function getInputHeight () {
-  return Math.round((window.innerWidth / 375 * 20) || 20)
-}
-
-function getMaxHeight () {
-  return Math.round((window.innerWidth && window.innerWidth / 375 * 81) || 81)
-}
-
-function getSelectAreaHeight () {
-  return Math.round((window.innerWidth && window.innerWidth / 375 * 200) || 200)
-}
-
 const input = {
   icon: { // 输入框icon显示
     TEXT: 0,
@@ -20,14 +8,9 @@ const input = {
     EMOJI: 2, // 点击表情select区域
     TEXT: 3 // 点击选择文本按钮
   },
-  HEIGHT: getInputHeight(), // 文本框初始高度
-  MAX_HEIGHT: getMaxHeight(), // 文本框最大高度
-  SELECT_AREA_HEIGHT: getSelectAreaHeight() // emoji、图片选择区域高度
+  HEIGHT: 20 / 37.5, // 文本框初始高度(rem)
+  MAX_HEIGHT: 80 / 37.5, // 文本框最大高度(rem)
+  SELECT_AREA_HEIGHT: 200 / 37.5 // emoji、图片选择区域高度(rem)
 }
 
-window.onresize = function () {
-  input.HEIGHT = getInputHeight()
-  input.MAX_HEIGHT = getMaxHeight()
-  input.SELECT_AREA_HEIGHT = getSelectAreaHeight()
-}
 export default input

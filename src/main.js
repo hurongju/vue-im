@@ -16,7 +16,7 @@ Vue.use(lazyload, {
 })
 
 Vue.use(menuSet, {
-  bottom: 50
+  bottom: 50 / 37.5 // 单位为rem
 })
 
 Vue.config.productionTip = false

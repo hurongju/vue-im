@@ -9,7 +9,7 @@
           @touchend="touchendHandler"
           @focus="$emit('focus', focusType)"
           @click="clickHandler"
-          :style="{height: inputHeight + 'px', maxHeight: maxHeight + 'px'}"
+          :style="{height: inputHeight + 'rem', maxHeight: maxHeight + 'rem'}"
           rows="1"
           v-model="message"
           :readonly="isReadOnly"
@@ -25,7 +25,7 @@
       </div>
     </section>
     <!-- 表情和相片选择区域 -->
-    <section class="chat-input__select-wrapper" :style="{ height: areaHeight + 'px' }">
+    <section class="chat-input__select-wrapper" :style="{ height: areaHeight + 'rem' }">
       <chat-photo-select v-show="isShowSelectArea && selectType === 'image'" key="chat-photo-select"/>
       <chat-emoji-select
         key="chat-emoji-select"
@@ -103,7 +103,8 @@ export default {
         this.$emit('update:inputHeight', cons.input.HEIGHT)
         this.$nextTick(() => {
           const padding = parseFloat(getComputedStyle(this.textarea).paddingTop) + parseFloat(getComputedStyle(this.textarea).paddingBottom)
-          this.$emit('update:inputHeight', Math.round(this.textarea.scrollHeight - padding))
+          const fontSize = parseFloat(document.documentElement.style.fontSize)
+          this.$emit('update:inputHeight', (this.textarea.scrollHeight - padding) / fontSize)
         })
         if (newV.trim()) {
           this.canSend = true

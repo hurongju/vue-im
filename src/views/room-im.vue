@@ -44,8 +44,6 @@ export default {
   methods: {
     getMenuOptions (item) {
       return {
-        width: Math.round(window.innerWidth / 375 * 120) || 120,
-        height: Math.round(window.innerWidth / 375 * 60) || 60,
         data: [
           item.unReadNum > 0 ? { id: cons.contextmenu.MARK_AS_READ, name: '标为已读' } : { id: cons.contextmenu.MARK_AS_UNREAD, name: '标为未读' },
           item.isTop ? { id: cons.contextmenu.UNSTICK, name: '取消置顶' } : { id: cons.contextmenu.TOP, name: '置顶该聊天' },

@@ -27,7 +27,7 @@ const store = new Vuex.Store({
   },
   getters: {
     isAndroid: state => state.env.isAndroid,
-    isIos: state => state.env.isIos,
+    isIOS: state => state.env.isIOS,
     username: state => state.user.username,
     avatarUrl: state => state.user.avatarUrl,
     messageList: state => state.chat.messageList,
