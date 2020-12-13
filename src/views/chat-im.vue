@@ -80,7 +80,7 @@ export default {
     inputHeight (newV, oldV) {
       if (newV > cons.input.MAX_HEIGHT || newV === cons.input.HEIGHT) return
       this.$nextTick(() => {
-        this.listLayout.scrollIntoView(false)
+        this.$refs.scroller.$el.scrollTop = this.listLayout.clientHeight
       })
     }
   },
@@ -91,10 +91,7 @@ export default {
     this.$bus.$on('accept-local-message', this.acceptLocalMessage)
     this.$bus.$on('send-image', this.sendImageHandler)
     this.$bus.$on('backup', this.backupHandler)
-    // this.getMsgList()
-    setTimeout(() => { // 页面过渡动画加载完全
-      this.getMsgList()
-    }, 300)
+    this.getMsgList()
   },
   beforeDestroy () {
     this.$bus.$off('accept-socket-message', this.acceptSocketMessage)
@@ -154,15 +151,15 @@ export default {
       const imgItemList = this.listAdapter.filter(val => val.type === 2)
       if (id === imgItemList.reverse()[0].id) {
         this.$nextTick(() => {
-          this.listLayout.scrollIntoView(false)
+          this.$refs.scroller.$el.scrollTop = this.listLayout.clientHeight
         })
       }
     },
     focusHandler (focusType) {
       if (focusType !== 2) {
         this.hideSelectArea()
-        setTimeout(() => {
-          this.listLayout.scrollIntoView(false)
+        setTimeout(() => { // android等待软键盘弹出后再滚动到底
+          this.$refs.scroller.$el.scrollTop = this.listLayout.clientHeight
         }, 400)
       }
     },
@@ -189,34 +186,36 @@ export default {
       }
       this.loadStatus = 'loading'
       this.lastMsgSendTime = (this.listAdapter[0] && this.listAdapter[0].sendTime) || null
-      this.$api.getMsgList({ // 接口获取聊天记录
-        pageSize: this.pageSize,
-        roomId: this.activeRoomId,
-        lastMsgSendTime: this.lastMsgSendTime
-      }).then(res => {
-        this.loadStatus = 'loaded'
-        if (res.data.success) {
-          const data = res.data.data
-          this.escapeHTML(data) // 转义
-          if (!this.lastMsgSendTime) { // 第一次请求
-            this.msgList = data
-            this.$nextTick(() => {
-              this.listLayout.scrollIntoView(false) // 滚动到底
-            })
-          } else {
-            this.msgList = data.concat(this.msgList)
-            this.$nextTick(() => {
-              this.$refs.scroller.$el.scrollTop = this.listLayout.clientHeight - this.beforePageHeight // 设置滚动到上次加载的位置
-            })
+      setTimeout(() => {
+        this.$api.getMsgList({ // 接口获取聊天记录
+          pageSize: this.pageSize,
+          roomId: this.activeRoomId,
+          lastMsgSendTime: this.lastMsgSendTime
+        }).then(res => {
+          this.loadStatus = 'loaded'
+          if (res.data.success) {
+            const data = res.data.data
+            this.escapeHTML(data) // 转义
+            if (!this.lastMsgSendTime) { // 第一次请求
+              this.msgList = data
+              this.$nextTick(() => {
+                this.$refs.scroller.$el.scrollTop = this.listLayout.clientHeight // 滚动到底
+              })
+            } else {
+              this.msgList = data.concat(this.msgList)
+              this.$nextTick(() => {
+                this.$refs.scroller.$el.scrollTop = this.listLayout.clientHeight - this.beforePageHeight // 设置滚动到上次加载的位置
+              })
+            }
+            if (data.length < this.pageSize) {
+              this.hasMore = false
+            }
+            this.beforePageHeight = this.listLayout.clientHeight
           }
-          if (data.length < this.pageSize) {
-            this.hasMore = false
-          }
-          this.beforePageHeight = this.listLayout.clientHeight
-        }
-      }).catch(rej => {
-        this.loadStatus = 'loaded'
-      })
+        }).catch(rej => {
+          this.loadStatus = 'loaded'
+        })
+      }, 500)
     },
     acceptLocalMessage (data) {
       this.hideSelectArea()
@@ -230,7 +229,7 @@ export default {
       messageHandler(_data)
       this.msgList.push(_data)
       this.$nextTick(() => {
-        this.listLayout.scrollIntoView(false)
+        this.$refs.scroller.$el.scrollTop = this.listLayout.clientHeight
       })
     },
     showTimeStampHandler (data) { // 根据配置的显示时间间隔显示时间块
@@ -257,7 +256,6 @@ export default {
         this.inputIcon = cons.input.icon.EMOJI
         setTimeout(() => {
           this.isShowSelectArea = false
-          this.listLayout.scrollIntoView(false)
         }, 300)
       }
     },
@@ -265,7 +263,7 @@ export default {
       this.isShowSelectArea = true
       this.selectAreaHeight = cons.input.SELECT_AREA_HEIGHT
       setTimeout(() => {
-        this.listLayout.scrollIntoView(false)
+        this.$refs.scroller.$el.scrollTop = this.listLayout.scrollHeight
       }, 300)
     }
   }

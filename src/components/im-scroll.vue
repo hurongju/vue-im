@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     scrollHandler (e) {
-      if (e.target.scrollTop <= 20 && this.loadStatus === 'loaded') {
+      if (e.target.scrollTop === 0 && this.loadStatus === 'loaded') {
         this.$emit('loadmore')
       }
     }

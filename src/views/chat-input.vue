@@ -104,7 +104,9 @@ export default {
         this.$nextTick(() => {
           const padding = parseFloat(getComputedStyle(this.textarea).paddingTop) + parseFloat(getComputedStyle(this.textarea).paddingBottom)
           const fontSize = parseFloat(document.documentElement.style.fontSize)
-          this.$emit('update:inputHeight', (this.textarea.scrollHeight - padding) / fontSize)
+          let updateHeight = Math.floor((this.textarea.scrollHeight - padding) / fontSize * 100) / 100
+          Math.abs(updateHeight - cons.input.HEIGHT) <= 0.1 && (updateHeight = cons.input.HEIGHT)
+          this.$emit('update:inputHeight', updateHeight)
         })
         if (newV.trim()) {
           this.canSend = true
@@ -128,6 +130,7 @@ export default {
     },
     touchstartHandler () { // 解决表情select下，长按文本内容会弹出软键盘bug
       this.showText && (this.isReadOnly = true)
+      this.showText && document.activeElement.blur()
     },
     backspace () { // 退格删除消息、表情
       const rangeStart = this.textarea.selectionStart
@@ -154,7 +157,7 @@ export default {
       })
     },
     pauseHandler () {
-      this.textarea.blur() // 切换App从前台切换到后台解除聚焦状态
+      document.activeElement.blur() // 切换App从前台切换到后台解除聚焦状态
     },
     selectEmoji (str) { // 选择表情
       const rangeStart = this.textarea.selectionStart
@@ -199,6 +202,7 @@ export default {
       this.isReadOnly = false
       if (e.detail === cons.input.focusType.EMOJI) {
         this.isReadOnly = true // 防止软键盘弹起
+        document.activeElement.blur()
         setTimeout(() => {
           this.isReadOnly = false
         }, 100)

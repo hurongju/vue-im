@@ -8,9 +8,9 @@ const input = {
     EMOJI: 2, // 点击表情select区域
     TEXT: 3 // 点击选择文本按钮
   },
-  HEIGHT: 20 / 37.5, // 文本框初始高度(rem)
-  MAX_HEIGHT: 80 / 37.5, // 文本框最大高度(rem)
-  SELECT_AREA_HEIGHT: 200 / 37.5 // emoji、图片选择区域高度(rem)
+  HEIGHT: Math.floor(20 / 37.5 * 100) / 100, // 文本框初始高度(rem)
+  MAX_HEIGHT: Math.floor(80 / 37.5 * 100) / 100, // 文本框最大高度(rem)
+  SELECT_AREA_HEIGHT: Math.floor(200 / 37.5 * 100) / 100 // emoji、图片选择区域高度(rem)
 }
 
 export default input
