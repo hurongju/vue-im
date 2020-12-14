@@ -120,9 +120,11 @@ export default {
   mounted () {
     this.textarea = this.$refs.textarea
     document.addEventListener('pause', this.pauseHandler, false) // 监听App切换到后台事件
+    this.$bus.$on('show-keybord', this.dispatchClick)
   },
   beforeDestroy () {
     document.removeEventListener('pause', this.pauseHandler, false)
+    this.$bus.$off('show-keybord', this.dispatchClick)
   },
   methods: {
     touchendHandler () { // 解决表情select下，长按文本内容会弹出软键盘bug
@@ -168,15 +170,15 @@ export default {
       })
     },
     send () {
-      this.changeSelect(this.selectType)
+      this.changeSelect(this.selectType, true)
       if (this.message.trim()) {
         this.$emit('send', this.message)
         this.message = ''
       }
     },
-    changeSelect (type) {
+    changeSelect (type, sendFlag = false) {
       this.selectType = type
-      if (!this.isShowSelectArea) {
+      if (!this.isShowSelectArea && !sendFlag) {
         this.$emit('show-select-area')
       }
       switch (type) {
@@ -198,8 +200,8 @@ export default {
     },
     clickHandler (e) {
       this.focusType = e.detail
-      this.$refs.textarea.focus()
       this.isReadOnly = false
+      this.$refs.textarea.focus()
       if (e.detail === cons.input.focusType.EMOJI) {
         this.isReadOnly = true // 防止软键盘弹起
         document.activeElement.blur()

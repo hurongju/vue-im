@@ -68,7 +68,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['username', 'socket', 'roomList', 'activeRoomId', 'title']),
+    ...mapGetters(['username', 'socket', 'roomList', 'activeRoomId', 'title', 'isIOS']),
     listAdapter () {
       return this.showTimeStampHandler(this.msgList)
     },
@@ -156,11 +156,21 @@ export default {
       }
     },
     focusHandler (focusType) {
-      if (focusType !== 2) {
+      if (focusType !== cons.input.focusType.EMOJI) {
         this.hideSelectArea()
         setTimeout(() => { // android等待软键盘弹出后再滚动到底
           this.$refs.scroller.$el.scrollTop = this.listLayout.clientHeight
         }, 400)
+        this.isIOS && this.isDelayShowKeybord(focusType)
+      }
+    },
+    /* 是否延时显示软键盘(解决IOS select区域显示时切换文本输入，输入框被软键盘遮挡) */
+    isDelayShowKeybord (focusType) {
+      if (this.isShowSelectArea && focusType !== cons.input.focusType.KEYBORD) {
+        document.activeElement.blur()
+        setTimeout(() => {
+          this.$bus.$emit('show-keybord', cons.input.focusType.KEYBORD)
+        }, 300)
       }
     },
     sendHandler (content, type = cons.messageType.TEXT) {
