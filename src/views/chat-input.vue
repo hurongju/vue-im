@@ -2,7 +2,7 @@
   <!-- 聊天输入框组件 chat-input -->
   <div class="chat-input__container">
     <!-- 输入框、按钮区域 -->
-    <section class="chat-input__input-wrapper" ref="inputWrapper">
+    <section class="chat-input__input-wrapper">
       <div class="chat-input__textarea-wrapper">
         <textarea class="chat-input__textarea"
           @touchstart="touchstartHandler"
@@ -18,10 +18,10 @@
         </textarea>
       </div>
       <div class="chat-input__btns">
-        <i class="iconfont icon-jianpan" v-show="showText" @click.stop="changeSelect('text')"></i>
-        <i class="iconfont icon-xiaolian" v-show="showEmoji" @click.stop="changeSelect('emoji')"></i>
+        <i class="iconfont icon-jianpan" v-show="showText" @click="changeSelect('text')"></i>
+        <i class="iconfont icon-xiaolian" v-show="showEmoji" @click="changeSelect('emoji')"></i>
         <van-button v-show="canSend" class="chat-input__send-btn" @click="send">发送</van-button>
-        <i class="iconfont icon-jia" v-show="!canSend" @click.stop="changeSelect('image')"></i>
+        <i class="iconfont icon-jia" v-show="!canSend" @click="changeSelect('image')"></i>
       </div>
     </section>
     <!-- 表情和相片选择区域 -->
@@ -30,7 +30,7 @@
       <chat-emoji-select
         key="chat-emoji-select"
         v-show="isShowSelectArea && selectType === 'emoji'"
-        @click.native="emojiSelectFocus"
+        @click="emojiSelectFocus"
         :backspace-color="backspaceColor"
         @input="selectEmoji"
         @backspace="backspace"
@@ -167,6 +167,7 @@ export default {
       this.message = this.message.substring(0, rangeStart) + str + this.message.substring(rangeEnd)
       this.$nextTick(() => {
         this.textarea.setSelectionRange(rangeStart + str.length, rangeStart + str.length)
+        this.textarea.scrollTop = this.textarea.scrollHeight
       })
     },
     send () {

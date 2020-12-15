@@ -78,7 +78,7 @@ export default {
   },
   watch: {
     inputHeight (newV, oldV) {
-      if (newV > cons.input.MAX_HEIGHT || newV === cons.input.HEIGHT) return
+      if (newV === cons.input.HEIGHT) return
       this.$nextTick(() => {
         this.$refs.scroller.$el.scrollTop = this.listLayout.clientHeight
       })

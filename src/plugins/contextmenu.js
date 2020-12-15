@@ -13,12 +13,17 @@ function setMenu ({ el, menuOptions, bottom }) {
     e.stopPropagation()
     timeout = setTimeout(() => {
       el.style.background = '#ebedf0'
+      el.isLongpress = true
       // 获取根元素的fontSize将长按的位置px转为rem
       const fontSize = parseFloat(document.documentElement.style.fontSize)
       addMenu([e.targetTouches[0].pageX / fontSize, e.targetTouches[0].pageY / fontSize], menuOptions, bottom, el)
     }, 700)
   }
-  el.touchendHandler = () => {
+  el.touchendHandler = (e) => {
+    if (el.isLongpress) { // 兼容ios12.4长按触发menu元素的click事件
+      e.preventDefault()
+      el.isLongpress = false
+    }
     clearTimeout(timeout)
   }
   el.contextmenuHandler = (e) => {

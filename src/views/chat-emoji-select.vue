@@ -1,6 +1,6 @@
 <template>
   <!-- 聊天发送表情选择组件 chat-emoji-select -->
-  <div class="chat-emoji-select__container">
+  <div class="chat-emoji-select__container" @click="$emit('click')">
     <div class="chat-emoji-select__wrapper">
       <p class="chat-emoji-select__icon"
         v-for="([strs, url], index) in emoji"
