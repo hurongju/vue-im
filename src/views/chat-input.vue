@@ -7,8 +7,8 @@
         <textarea class="chat-input__textarea"
           @touchstart="touchstartHandler"
           @touchend="touchendHandler"
-          @focus="$emit('focus', focusType)"
-          @click="clickHandler"
+          @focus="focusHandler"
+          @click="clickTextarea"
           :style="{height: inputHeight + 'rem', maxHeight: maxHeight + 'rem'}"
           rows="1"
           v-model="message"
@@ -23,6 +23,7 @@
         <van-button v-show="canSend" class="chat-input__send-btn" @click="send">发送</van-button>
         <i class="iconfont icon-jia" v-show="!canSend" @click="changeSelect('image')"></i>
       </div>
+      <div v-show="isShowSelectArea" class="chat-input__bottom-line"></div>
     </section>
     <!-- 表情和相片选择区域 -->
     <section class="chat-input__select-wrapper" :style="{ height: areaHeight + 'rem' }">
@@ -30,8 +31,8 @@
       <chat-emoji-select
         key="chat-emoji-select"
         v-show="isShowSelectArea && selectType === 'emoji'"
-        @click="emojiSelectFocus"
         :backspace-color="backspaceColor"
+        @click="dispatchFocus"
         @input="selectEmoji"
         @backspace="backspace"
       />
@@ -46,6 +47,7 @@ import PhotoSelelct from './chat-photo-select'
 import EmojiSelelct from './chat-emoji-select'
 import { indexOfEmoji } from '@/assets/js/emoji'
 import cons from '@/constants'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'ChatInput',
@@ -85,6 +87,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['isIOS']),
     showText () {
       return this.inputIcon === cons.input.icon.TEXT
     },
@@ -120,11 +123,13 @@ export default {
   mounted () {
     this.textarea = this.$refs.textarea
     document.addEventListener('pause', this.pauseHandler, false) // 监听App切换到后台事件
-    this.$bus.$on('show-keybord', this.dispatchClick)
+    this.$bus.$on('show-keybord', this.dispatchFocus)
+    this.$bus.$on('touch-scrollview', this.setFocusType)
   },
   beforeDestroy () {
     document.removeEventListener('pause', this.pauseHandler, false)
-    this.$bus.$off('show-keybord', this.dispatchClick)
+    this.$bus.$off('show-keybord', this.dispatchFocus)
+    this.$bus.$off('touch-scrollview', this.setFocusType)
   },
   methods: {
     touchendHandler () { // 解决表情select下，长按文本内容会弹出软键盘bug
@@ -132,7 +137,8 @@ export default {
     },
     touchstartHandler () { // 解决表情select下，长按文本内容会弹出软键盘bug
       this.showText && (this.isReadOnly = true)
-      this.showText && document.activeElement.blur()
+      this.showText && this.isIOS && document.activeElement.blur()
+      // this.showText && this.isIOS && plus.key.hideSoftKeybord()
     },
     backspace () { // 退格删除消息、表情
       const rangeStart = this.textarea.selectionStart
@@ -184,13 +190,11 @@ export default {
       }
       switch (type) {
         case 'emoji': {
-          this.$emit('update:input-icon', cons.input.icon.TEXT)
-          this.dispatchClick(cons.input.focusType.EMOJI)
+          this.dispatchFocus(cons.input.focusType.EMOJI)
           break
         }
         case 'text': {
-          this.$emit('update:input-icon', cons.input.icon.EMOJI)
-          this.dispatchClick(cons.input.focusType.TEXT)
+          this.dispatchFocus(cons.input.focusType.TEXT)
           break
         }
         case 'image': {
@@ -199,27 +203,32 @@ export default {
         }
       }
     },
-    clickHandler (e) {
-      this.focusType = e.detail
-      this.isReadOnly = false
-      this.$refs.textarea.focus()
-      if (e.detail === cons.input.focusType.EMOJI) {
+    focusHandler () {
+      if (this.focusType === cons.input.focusType.EMOJI) {
+        this.$emit('update:input-icon', cons.input.icon.TEXT)
         this.isReadOnly = true // 防止软键盘弹起
-        document.activeElement.blur()
+        this.isIOS && document.activeElement.blur()
+        // this.isIOS && plus.key.hideSoftKeybord()
         setTimeout(() => {
           this.isReadOnly = false
         }, 100)
       } else {
         this.$emit('update:input-icon', cons.input.icon.EMOJI)
         this.selectType = 'text'
-        this.$emit('focus')
       }
+      this.$emit('focus', this.focusType)
     },
-    dispatchClick (detail) {
-      this.$refs.textarea.dispatchEvent(new MouseEvent('click', { detail: detail }))
+    clickTextarea () {
+      this.focusType = cons.input.focusType.TEXT
+      this.$emit('focus', this.focusType)
     },
-    emojiSelectFocus () {
-      this.dispatchClick(cons.input.focusType.EMOJI)
+    dispatchFocus (type) {
+      this.focusType = type
+      this.isReadOnly = false
+      this.textarea.focus()
+    },
+    setFocusType (type) {
+      this.focusType = type
     }
   }
 }

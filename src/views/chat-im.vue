@@ -2,7 +2,7 @@
   <!-- 聊天页面组件 chat-im -->
   <div class="chat-im__container">
     <im-scroll
-      @touchstart.native="hideSelectArea"
+      @touchstart.native="touchstartScroll"
       class="chat-im__scroller"
       ref="scroller"
       :has-more="hasMore"
@@ -110,13 +110,13 @@ export default {
     },
     previewImage (url) { // 图片预览
       if (window.plus) {
-        const absoluteUrl = /^file:/.test(url) ? url : plus.io.convertLocalFileSystemURL('_downloads/image/' + md5(url) + '.jpg') // 平台绝对路径
+        const absoluteUrl = /^file:/.test(url) ? url : 'file://' + plus.io.convertLocalFileSystemURL('_downloads/image/' + md5(url) + '.jpg') // 平台绝对路径
         let imgItemList = this.listAdapter.filter(val => val.type === 2).map(val => val.content)
         imgItemList = imgItemList.map(val => {
           if (/^file:/.test(val)) {
             return val
           } else {
-            return plus.io.convertLocalFileSystemURL('_downloads/image/' + md5(val) + '.jpg')
+            return 'file://' + plus.io.convertLocalFileSystemURL('_downloads/image/' + md5(val) + '.jpg')
           }
         })
         plus.nativeUI.previewImage(imgItemList, {
@@ -268,6 +268,11 @@ export default {
           this.isShowSelectArea = false
         }, 300)
       }
+    },
+    touchstartScroll () {
+      this.hideSelectArea()
+      this.$bus.$emit('touch-scrollview', cons.input.focusType.TEXT)
+      document.activeElement.blur()
     },
     showSelectArea () { // 显示emoji、图片选择区域
       this.isShowSelectArea = true

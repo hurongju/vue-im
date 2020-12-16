@@ -38,11 +38,9 @@ export default {
       this.transitionName = ''
       if (to.meta.index > from.meta.index) {
         this.transitionName = 'fade-left'
-        // this.transitionName = 'fadeInLeft'
       }
       if (to.meta.index < from.meta.index) {
         this.transitionName = 'fade-right'
-        // this.transitionName = 'fadeInRight'
       }
     }
   },

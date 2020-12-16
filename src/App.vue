@@ -28,7 +28,7 @@ export default {
   methods: {
     plusReady () {
       plus.key.addEventListener('backbutton', this.backHandler, false)
-      if (__STG__ || __PRD__) {
+      if (__STG__) {
         plus.nativeUI.toast('首页加载时间：' + plus.runtime.launchLoadedTime + 'ms')
       }
     },

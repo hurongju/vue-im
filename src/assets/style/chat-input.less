@@ -2,6 +2,8 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  .fit-ios-padding-bottom();
+  background: #eee;
   >.chat-input__input-wrapper {
     position: relative;
     width: 100%;
@@ -9,7 +11,6 @@
     align-items: flex-end;
     padding: 5px 10px;
     box-sizing: border-box;
-    background: #eee;
     >.chat-input__textarea-wrapper {
       display: flex;
       padding: 0;
@@ -42,7 +43,7 @@
         margin-left: 8px;
       }
     }
-    &::before {
+    .chat-input__bottom-line {
       position: absolute;
       bottom: 0;
       left: 0;

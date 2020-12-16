@@ -17,3 +17,19 @@
   justify-content: space-between;
   flex-direction: column;
 }
+
+/* 适配刘海屏底部 */
+.fit-ios-padding-bottom {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+/* 适配刘海屏底部 */
+.fit-ios-bottom {
+  bottom: constant(safe-area-inset-bottom);
+  bottom: env(safe-area-inset-bottom);
+}
+/* 适配刘海屏顶部 */
+.fit-ios-padding-top {
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+}
