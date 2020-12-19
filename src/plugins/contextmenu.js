@@ -19,6 +19,10 @@ function setMenu ({ el, menuOptions, bottom }) {
       addMenu([e.targetTouches[0].pageX / fontSize, e.targetTouches[0].pageY / fontSize], menuOptions, bottom, el)
     }, 700)
   }
+  el.touchmoveHandler = () => {
+    el.isLongpress = true
+    clearTimeout(timeout)
+  }
   el.touchendHandler = (e) => {
     if (el.isLongpress) { // 兼容ios12.4长按触发menu元素的click事件
       e.preventDefault()
@@ -30,6 +34,7 @@ function setMenu ({ el, menuOptions, bottom }) {
     e.preventDefault()
   }
   el.addEventListener('touchstart', el.touchstartHandler)
+  el.addEventListener('touchmove', el.touchmoveHandler)
   el.addEventListener('touchend', el.touchendHandler)
   el.addEventListener('contextmenu', el.contextmenuHandler)
 }
@@ -152,6 +157,7 @@ export default {
       },
       componentUpdated (el, binding) {
         el.removeEventListener('touchstart', el.touchstartHandler)
+        el.removeEventListener('touchmove', el.touchmoveHandler)
         el.removeEventListener('touchend', el.touchendHandler)
         el.removeEventListener('contextmenu', el.contextmenuHandler)
         const menuOptions = binding.value

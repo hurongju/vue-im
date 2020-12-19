@@ -7,7 +7,6 @@
         <textarea class="chat-input__textarea"
           @touchstart="touchstartHandler"
           @touchend="touchendHandler"
-          @focus="focusHandler"
           @click="clickTextarea"
           :style="{height: inputHeight + 'rem', maxHeight: maxHeight + 'rem'}"
           rows="1"
@@ -32,7 +31,6 @@
         key="chat-emoji-select"
         v-show="isShowSelectArea && selectType === 'emoji'"
         :backspace-color="backspaceColor"
-        @click="dispatchFocus"
         @input="selectEmoji"
         @backspace="backspace"
       />
@@ -82,12 +80,12 @@ export default {
       selectType: null,
       isReadOnly: false,
       backspaceColor: '#aaa',
-      focusType: cons.input.focusType.DEFAULT,
+      focusType: cons.input.focusType.TEXT,
       maxHeight: cons.input.MAX_HEIGHT
     }
   },
   computed: {
-    ...mapGetters(['isIOS']),
+    ...mapGetters(['isIOS', 'isAndroid']),
     showText () {
       return this.inputIcon === cons.input.icon.TEXT
     },
@@ -123,12 +121,12 @@ export default {
   mounted () {
     this.textarea = this.$refs.textarea
     document.addEventListener('pause', this.pauseHandler, false) // 监听App切换到后台事件
-    this.$bus.$on('show-keybord', this.dispatchFocus)
-    this.$bus.$on('touch-scrollview', this.setFocusType)
+    this.$bus.$on('delay-show-keyboard', this.dispatchFocus) // IOS系统延迟显示软键盘
+    this.$bus.$on('touch-scrollview', this.setFocusType) // 点击非输入框区域隐藏软键盘
   },
   beforeDestroy () {
     document.removeEventListener('pause', this.pauseHandler, false)
-    this.$bus.$off('show-keybord', this.dispatchFocus)
+    this.$bus.$off('delay-show-keyboard', this.dispatchFocus)
     this.$bus.$off('touch-scrollview', this.setFocusType)
   },
   methods: {
@@ -136,14 +134,21 @@ export default {
       this.showText && (this.isReadOnly = false)
     },
     touchstartHandler () { // 解决表情select下，长按文本内容会弹出软键盘bug
-      this.showText && (this.isReadOnly = true)
-      this.showText && this.isIOS && document.activeElement.blur()
-      // this.showText && this.isIOS && plus.key.hideSoftKeybord()
+      if (this.isIOS) {
+        this.showText && document.activeElement.blur()
+        this.showText && window.plus && plus.key.hideSoftKeybord()
+      } else {
+        this.showText && (this.isReadOnly = true)
+      }
     },
     backspace () { // 退格删除消息、表情
+      if (this.isAndroid || (this.isIOS && typeof window.plus === 'undefined')) {
+        this.textarea.focus()
+      }
       const rangeStart = this.textarea.selectionStart
       const rangeEnd = this.textarea.selectionEnd
       if (rangeStart === 0 && rangeEnd === 0) {
+        this.preventKeyboard()
         return
       }
       const delValue = this.textarea.value.substring(rangeStart - 1, rangeStart)
@@ -162,22 +167,39 @@ export default {
       this.$nextTick(() => {
         const cursor = rangeStart - length > 0 ? rangeStart - length : 0
         this.textarea.setSelectionRange(cursor, cursor)
+        this.preventKeyboard()
       })
     },
     pauseHandler () {
       document.activeElement.blur() // 切换App从前台切换到后台解除聚焦状态
     },
+    preventKeyboard () { // 阻止软键盘弹起
+      if (this.isIOS) {
+        document.activeElement.blur()
+        window.plus && plus.key.hideSoftKeybord()
+      } else {
+        this.isReadOnly = true // 防止软键盘弹起
+        setTimeout(() => {
+          this.isReadOnly = false
+        }, 100)
+      }
+    },
     selectEmoji (str) { // 选择表情
+      if (this.isAndroid || (this.isIOS && typeof window.plus === 'undefined')) {
+        this.textarea.focus()
+      }
       const rangeStart = this.textarea.selectionStart
       const rangeEnd = this.textarea.selectionEnd
       this.message = this.message.substring(0, rangeStart) + str + this.message.substring(rangeEnd)
       this.$nextTick(() => {
         this.textarea.setSelectionRange(rangeStart + str.length, rangeStart + str.length)
+        this.preventKeyboard()
         this.textarea.scrollTop = this.textarea.scrollHeight
       })
     },
     send () {
       this.changeSelect(this.selectType, true)
+      this.selectType === 'text' && this.textarea.focus()
       if (this.message.trim()) {
         this.$emit('send', this.message)
         this.message = ''
@@ -190,11 +212,18 @@ export default {
       }
       switch (type) {
         case 'emoji': {
-          this.dispatchFocus(cons.input.focusType.EMOJI)
+          this.focusType = cons.input.focusType.EMOJI
+          this.$emit('update:input-icon', cons.input.icon.TEXT)
+          this.$emit('focus', this.focusType)
           break
         }
         case 'text': {
-          this.dispatchFocus(cons.input.focusType.TEXT)
+          this.focusType = cons.input.focusType.TEXT
+          this.$emit('update:input-icon', cons.input.icon.EMOJI)
+          this.$emit('focus', this.focusType)
+          if (!this.isIOS) {
+            this.textarea.focus()
+          }
           break
         }
         case 'image': {
@@ -203,28 +232,15 @@ export default {
         }
       }
     },
-    focusHandler () {
-      if (this.focusType === cons.input.focusType.EMOJI) {
-        this.$emit('update:input-icon', cons.input.icon.TEXT)
-        this.isReadOnly = true // 防止软键盘弹起
-        this.isIOS && document.activeElement.blur()
-        // this.isIOS && plus.key.hideSoftKeybord()
-        setTimeout(() => {
-          this.isReadOnly = false
-        }, 100)
-      } else {
-        this.$emit('update:input-icon', cons.input.icon.EMOJI)
-        this.selectType = 'text'
-      }
-      this.$emit('focus', this.focusType)
-    },
     clickTextarea () {
-      this.focusType = cons.input.focusType.TEXT
-      this.$emit('focus', this.focusType)
+      if (this.selectType === 'emoji') {
+        this.changeSelect('text')
+      } else {
+        this.$emit('focus', this.focusType)
+      }
     },
     dispatchFocus (type) {
       this.focusType = type
-      this.isReadOnly = false
       this.textarea.focus()
     },
     setFocusType (type) {

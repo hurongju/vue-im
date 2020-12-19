@@ -161,15 +161,15 @@ export default {
         setTimeout(() => { // android等待软键盘弹出后再滚动到底
           this.$refs.scroller.$el.scrollTop = this.listLayout.clientHeight
         }, 400)
-        this.isIOS && this.isDelayShowKeybord(focusType)
+        this.isIOS && this.isDelayShowKeyboard(focusType)
       }
     },
     /* 是否延时显示软键盘(解决IOS select区域显示时切换文本输入，输入框被软键盘遮挡) */
-    isDelayShowKeybord (focusType) {
-      if (this.isShowSelectArea && focusType !== cons.input.focusType.KEYBORD) {
+    isDelayShowKeyboard (focusType) {
+      if (this.isShowSelectArea && focusType !== cons.input.focusType.KEYBOARD) {
         document.activeElement.blur()
         setTimeout(() => {
-          this.$bus.$emit('show-keybord', cons.input.focusType.KEYBORD)
+          this.$bus.$emit('delay-show-keyboard', cons.input.focusType.KEYBOARD)
         }, 300)
       }
     },

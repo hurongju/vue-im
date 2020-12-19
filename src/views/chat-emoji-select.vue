@@ -1,6 +1,6 @@
 <template>
   <!-- 聊天发送表情选择组件 chat-emoji-select -->
-  <div class="chat-emoji-select__container" @click="clickHandler">
+  <div class="chat-emoji-select__container">
     <div class="chat-emoji-select__wrapper">
       <p class="chat-emoji-select__icon"
         v-for="([strs, url], index) in emoji"
@@ -20,7 +20,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import emoji from '@/assets/js/emoji'
-import cons from '@/constants'
 
 export default {
   name: 'ChatEmojiSelect',
@@ -41,9 +40,6 @@ export default {
     },
     backspace () {
       this.$emit('backspace')
-    },
-    clickHandler () {
-      this.$emit('click', cons.input.focusType.EMOJI)
     },
     computedStyle (index) {
       const pos = [0, 0]
