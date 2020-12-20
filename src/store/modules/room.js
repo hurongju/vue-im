@@ -35,7 +35,6 @@ const actions = {
     commit('SET_ROOM_LIST', getRoomList(rootGetters.username))
   },
   updateLastMsg ({ commit, rootGetters }, data) { // 房间最后一条消息更新
-    console.log('updateLastMsg :>> ', data)
     updateLastMsg(rootGetters.username, data)
     commit('SET_ROOM_LIST', getRoomList(rootGetters.username))
   }

@@ -19,8 +19,10 @@ function setMenu ({ el, menuOptions, bottom }) {
       addMenu([e.targetTouches[0].pageX / fontSize, e.targetTouches[0].pageY / fontSize], menuOptions, bottom, el)
     }, 700)
   }
-  el.touchmoveHandler = () => {
-    el.isLongpress = true
+  el.touchmoveHandler = (e) => {
+    if (el.isLongpress) { // 兼容ios12.4长按触发menu元素的click事件
+      el.isLongpress = false
+    }
     clearTimeout(timeout)
   }
   el.touchendHandler = (e) => {

@@ -10,7 +10,7 @@ export function handleFriendList (data) {
   const resultList = []
   if (data.length > 0) {
     data.forEach(val => {
-      const prefix = val.name.substr(0, 1)
+      const prefix = val.name.substr(0, 1).toUpperCase()
       prefixList.push(prefix)
     })
     prefixList = Array.from(new Set(prefixList))
@@ -19,7 +19,7 @@ export function handleFriendList (data) {
         id: prefixList[i].toUpperCase()
       }
       obj.list = data.filter(val => {
-        return val.name.substr(0, 1) === prefixList[i]
+        return val.name.substr(0, 1).toUpperCase() === prefixList[i]
       })
       resultList.push(obj)
     }
