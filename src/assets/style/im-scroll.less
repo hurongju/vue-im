@@ -1,7 +1,12 @@
 .im-scroll__container {
   width: 100%;
-  overflow: auto;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 10px;
   background: transparent;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   .load-more {
     display: flex;
     align-items: center;

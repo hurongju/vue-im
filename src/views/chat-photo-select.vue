@@ -78,7 +78,7 @@ export default {
               entry.remove((entry) => {
                 debug && console.log('临时文件删除成功' + localImageUrl)
                 // 重新下载图片
-                this.downloadImg()
+                this.downloadImg(imageUrl)
               }, (e) => {
                 debug && console.log('临时文件删除失败' + localImageUrl)
               })
@@ -104,12 +104,10 @@ export default {
               this.$bus.$emit('send-image', responseObj.data, true)
               // 下载图片到本地缓存
               responseObj.data.forEach(val => {
-                this.downloadImg(val, true)
+                this.downloadImg(val)
               })
             }
           } else {
-            console.log('t :>> ', t)
-            console.log('status :>> ', status)
             return Toast('上传图片失败')
           }
         }
@@ -118,7 +116,6 @@ export default {
       task.setRequestHeader('Authorization', `Bearer ${token}`)
       for (var i in files) {
         files[i] = /^file:/.test(files[i]) ? files[i] : 'file://' + files[i]
-        console.log('上传图片' + i, files[i])
         task.addFile(files[i], { key: 'file' + i })
         // 发送本地消息
         this.$bus.$emit('accept-local-message', {
@@ -137,12 +134,10 @@ export default {
       plus.gallery.pick((gallery) => {
         this.uploadImg(gallery.files)
       }, (e) => {
-        console.log('取消选择图片11')
       }, { filter: 'image', maximum: 3, multiple: true, filename: '_downloads/image/', permissionAlert: true })
     },
     fileHandler (e) {
       const files = e.target.files
-      console.log('file :>> ', files)
       // 默认图片类型
       const typeList = ['png', 'jpeg', 'jpg', 'gif']
       if (files.length > 3) {

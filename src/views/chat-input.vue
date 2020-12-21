@@ -77,7 +77,7 @@ export default {
       message: '',
       textarea: null,
       canSend: false,
-      selectType: null,
+      selectType: 'text',
       isReadOnly: false,
       backspaceColor: '#aaa',
       focusType: cons.input.focusType.TEXT,
@@ -233,7 +233,7 @@ export default {
       }
     },
     clickTextarea () {
-      if (this.selectType === 'emoji') {
+      if (this.selectType === 'emoji' || this.selectType === 'image') {
         this.changeSelect('text')
       } else {
         this.$emit('focus', this.focusType)

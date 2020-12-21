@@ -1,9 +1,14 @@
 .add-friend-search__scroll-list {
   position: absolute;
-  overflow: auto;
+  overflow-y: scroll;
+  padding-right: 10px;
+  -webkit-overflow-scrolling: touch;
   top: 54px;
   bottom: 0px;
   width: 100%;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 .add-friend-search__cell {
   position: relative;
