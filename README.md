@@ -18,3 +18,24 @@ https://im.goldzy.top/
 [vue-im-server](https://github.com/hurongju/vue-im-server/)
 ## android测试包安装
 https://im.goldzy.top/app-debug.apk
+
+## 动图预览  
+
+**聊天列表**  
+<br/>
+ <img src="./src/assets/img/room.gif" width = "261" height = "508" alt="聊天列表" align=center />
+<br/>
+
+**好友列表**
+<br/>
+ <img src="./src/assets/img/contact.gif" width = "261" height = "508" alt="好友列表" align=center />
+<br/>
+
+**聊天界面**
+<br/>
+<img src="./src/assets/img/chat.gif" width = "261" height = "508" alt="聊天界面" align=center />  
+<br/>
+
+**添加好友**
+<br/>
+<img src="./src/assets/img/addFriend.gif" width = "501" height = "513" alt="添加好友" align=center />
