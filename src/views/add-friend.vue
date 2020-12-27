@@ -17,6 +17,7 @@
       :finished="finished"
       @load="getAddList"
       @agree="agree"
+      @delete="deleteAddInfo"
       key="add-friend-info"
     />
     <add-friend-search
@@ -149,7 +150,6 @@ export default {
       return data.filter(value => value.username !== this.username)
     },
     agree (item) {
-      console.log('item :>> ', item)
       if (!item) {
         return
       }
@@ -172,10 +172,14 @@ export default {
       }
     },
     deleteAddInfo (id) {
+      console.log('id :>> ', id)
+      if (!id) {
+        return
+      }
       this.$api.deleteAddInfo({ id: id }).then(res => {
         if (res.data.success) {
           Toast('删除成功')
-          this.getAddList()
+          this.list = this.list.filter(val => val.id !== id)
         }
       }).catch(rej => {
         Toast('删除失败')

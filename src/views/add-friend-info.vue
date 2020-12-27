@@ -18,13 +18,14 @@
         :desc="statusDesc[item.addStatus - 1]"
         :dateFormatType="dateFormatType"
         @agree="agree(item)"
+        :menu-options="menuOptions"
       />
     </template>
   </van-list>
 </template>
 
 <script>
-import { List } from 'vant'
+import { Dialog, List } from 'vant'
 import Card from '@/components/im-card'
 import cons from '@/constants'
 
@@ -50,7 +51,25 @@ export default {
   data () {
     return {
       statusDesc: ['同意', '已同意'],
-      dateFormatType: cons.dateFormatType.SIMPLE
+      dateFormatType: cons.dateFormatType.SIMPLE,
+      menuOptions: {
+        data: [
+          { id: cons.contextmenu.DELETE, name: '删除' }
+        ],
+        handler: (id, el) => {
+          const index = Array.prototype.indexOf.call(el.parentNode.childNodes, el)
+          Dialog.confirm({
+            title: '确定要删除该记录吗',
+            message: '',
+            beforeClose: (action, done) => {
+              if (action === 'confirm') {
+                this.$emit('delete', this.list[index].id)
+              }
+              done(action)
+            }
+          }).catch(rej => {})
+        }
+      }
     }
   },
   computed: {

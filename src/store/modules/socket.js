@@ -22,7 +22,8 @@ const actions = {
         isRegister: (data && data.isRegister) || false // 是否第一次注册,服务端连接成功后发送一条注册成功消息
       },
       reconnection: true,
-      reconnectionAttempts: 2
+      reconnectionDelay: 3000,
+      reconnectionAttempts: 8
     })
     socketio.on('connect', () => {
       console.log('socket连接状态success ')
