@@ -64,7 +64,8 @@ export default {
       isShowSelectArea: false, // select区域显示状态
       inputIcon: cons.input.icon.EMOJI, // 输入框旁的icon类型
       inputHeight: cons.input.HEIGHT, // 输入框高度
-      selectAreaHeight: 0 // select区域高度
+      selectAreaHeight: 0, // select区域高度
+      scrollContainer: null // 滚动容器元素
     }
   },
   computed: {
@@ -80,12 +81,13 @@ export default {
     inputHeight (newV, oldV) {
       if (newV === cons.input.HEIGHT) return
       this.$nextTick(() => {
-        this.$refs.scroller.$el.scrollTop = this.listLayout.clientHeight
+        this.scrollContainer.scrollTop = this.listLayout.clientHeight
       })
     }
   },
   mounted () {
     this.listLayout = this.$refs.listLayout
+    this.scrollContainer = this.$refs.scroller.$el
     this.$store.dispatch('room/updateUnReadMsg', { num: 0, roomId: this.activeRoomId }) // 消息已读
     this.$bus.$on('accept-socket-message', this.acceptSocketMessage)
     this.$bus.$on('accept-local-message', this.acceptLocalMessage)
@@ -151,7 +153,7 @@ export default {
       const imgItemList = this.listAdapter.filter(val => val.type === 2)
       if (id === imgItemList.reverse()[0].id) {
         this.$nextTick(() => {
-          this.$refs.scroller.$el.scrollTop = this.listLayout.clientHeight
+          this.scrollContainer.scrollTop = this.listLayout.clientHeight
         })
       }
     },
@@ -159,7 +161,7 @@ export default {
       if (focusType !== cons.input.focusType.EMOJI) {
         this.hideSelectArea()
         setTimeout(() => { // android等待软键盘弹出后再滚动到底
-          this.$refs.scroller.$el.scrollTop = this.listLayout.clientHeight
+          this.scrollContainer.scrollTop = this.listLayout.clientHeight
         }, 400)
         this.isIOS && this.isDelayShowKeyboard(focusType)
       }
@@ -209,12 +211,12 @@ export default {
             if (!this.lastMsgSendTime) { // 第一次请求
               this.msgList = data
               this.$nextTick(() => {
-                this.$refs.scroller.$el.scrollTop = this.listLayout.clientHeight // 滚动到底
+                this.scrollContainer.scrollTop = this.listLayout.clientHeight // 滚动到底
               })
             } else {
               this.msgList = data.concat(this.msgList)
               this.$nextTick(() => {
-                this.$refs.scroller.$el.scrollTop = this.listLayout.clientHeight - this.beforePageHeight // 设置滚动到上次加载的位置
+                this.scrollContainer.scrollTop = this.listLayout.clientHeight - this.beforePageHeight // 设置滚动到上次加载的位置
               })
             }
             if (data.length < this.pageSize) {
@@ -238,9 +240,12 @@ export default {
       const _data = _.cloneDeep(data)
       messageHandler(_data)
       this.msgList.push(_data)
-      this.$nextTick(() => {
-        this.$refs.scroller.$el.scrollTop = this.listLayout.clientHeight
-      })
+      const errorNumber = 20
+      if (this.scrollContainer.scrollHeight - this.scrollContainer.clientHeight - this.scrollContainer.scrollTop < errorNumber) {
+        this.$nextTick(() => {
+          this.scrollContainer.scrollTop = this.listLayout.clientHeight
+        })
+      }
     },
     showTimeStampHandler (data) { // 根据配置的显示时间间隔显示时间块
       if (data.length === 0) {
@@ -278,7 +283,7 @@ export default {
       this.isShowSelectArea = true
       this.selectAreaHeight = cons.input.SELECT_AREA_HEIGHT
       setTimeout(() => {
-        this.$refs.scroller.$el.scrollTop = this.listLayout.scrollHeight
+        this.scrollContainer.scrollTop = this.listLayout.scrollHeight
       }, 300)
     }
   }
