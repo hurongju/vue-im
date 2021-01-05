@@ -45,7 +45,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['username', 'activeRoomId', 'title'])
+    ...mapGetters(['username', 'activeRoomId', 'title', 'isExpired'])
   },
   methods: {
     plusFileHandler (id) {
@@ -92,6 +92,10 @@ export default {
       downloadTask.start()
     },
     uploadImg (files) {
+      if (this.isExpired) { // 会话不存在，禁止发送
+        this.$toast({ message: '非好友不能发送消息', icon: 'warning' })
+        return
+      }
       const task = plus.uploader.createUpload(cons.url.UPLOAD_IMG, { method: 'POST', priority: 100 },
         (t, status) => {
           // 上传完成
@@ -137,6 +141,10 @@ export default {
       }, { filter: 'image', maximum: 3, multiple: true, filename: '_downloads/image/', permissionAlert: true })
     },
     fileHandler (e) {
+      if (this.isExpired) { // 会话已删除，禁止发送
+        this.$toast({ message: '非好友不能发送消息', icon: 'warning' })
+        return
+      }
       const files = e.target.files
       // 默认图片类型
       const typeList = ['png', 'jpeg', 'jpg', 'gif']

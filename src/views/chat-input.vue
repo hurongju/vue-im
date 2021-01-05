@@ -85,7 +85,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['isIOS', 'isAndroid']),
+    ...mapGetters(['isIOS', 'isAndroid', 'isExpired']),
     showText () {
       return this.inputIcon === cons.input.icon.TEXT
     },
@@ -198,6 +198,10 @@ export default {
       })
     },
     send () {
+      if (this.isExpired) { // 会话不存在，禁止发送
+        this.$toast({ message: '非好友不能发送消息', icon: 'warning' })
+        return
+      }
       this.changeSelect(this.selectType, true)
       this.selectType === 'text' && this.textarea.focus()
       if (this.message.trim()) {

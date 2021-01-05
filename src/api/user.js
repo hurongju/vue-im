@@ -11,6 +11,9 @@ export default {
   addFriend (data) { // 添加好友
     return request.post(cons.url.ADD_FRIEND, data)
   },
+  deleteFriend (data) { // 删除好友
+    return request.post(cons.url.DELETE_FRIEND, data)
+  },
   getAddList (data) { // 获取申请列表
     return request.post(cons.url.GET_ADD_LIST, data)
   },

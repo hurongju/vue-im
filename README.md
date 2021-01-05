@@ -1,6 +1,9 @@
 # vue-im
 基于[vue2.0](https://cn.vuejs.org/)、[socket.io](https://socket.io/docs/v3)、[h5+ runtime](https://ask.dcloud.net.cn/docs/)的即时通讯App
 
+## 更新内容
+* 新增删除好友功能
+* 添加好友申请成功增加轻提示
 ## 安装工程
 ```
 npm install
@@ -10,7 +13,7 @@ npm install
 npm run serve
 ```
 
-## 线上预览地址（切换至手机模式下预览）
+## 线上预览地址（建议使用Chrome浏览器切换至手机模式下预览）
 https://im.goldzy.top/
 
 

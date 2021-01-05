@@ -15,8 +15,9 @@
           :title="item_child.name"
           v-for="item_child in item.list" :key="item_child.uid"
           @click="goToChat(item_child)"
-          v-menu="menuOptions"
+          v-menu="menuOptions()"
           :data-id="item_child.uid"
+          :data-rid="item_child.roomId"
         />
       </div>
     </van-index-bar>
@@ -24,7 +25,7 @@
 </template>
 
 <script>
-import { IndexBar, IndexAnchor, Cell, Icon } from 'vant'
+import { IndexBar, IndexAnchor, Cell, Icon, Dialog } from 'vant'
 import { handleFriendList } from '@/assets/js/handler'
 import { mapState } from 'vuex'
 
@@ -38,14 +39,7 @@ export default {
   },
   data () {
     return {
-      list: [],
-      menuOptions: {
-        data: [
-          { id: 1, name: '设置备注' }
-        ],
-        handler: (id, el) => {
-        }
-      }
+      list: []
     }
   },
   computed: {
@@ -76,6 +70,35 @@ export default {
       this.$router.push({ path: 'chat-im/' + data.roomId }).catch(rej => {})
       this.$store.commit('room/SET_ACTIVE_ROOM_ID', data.roomId)
       this.$store.commit('SET_TITLE', data.name)
+    },
+    menuOptions () {
+      return {
+        data: [
+          { id: 1, name: '删除' }
+        ],
+        handler: (id, el) => {
+          const uid = parseInt(el.dataset.id)
+          const roomId = parseInt(el.dataset.rid)
+          this.delete(uid, roomId)
+        }
+      }
+    },
+    delete (uid, roomId) {
+      Dialog.confirm({
+        title: '确定要删除该好友吗',
+        message: '',
+        beforeClose: (action, done) => {
+          if (action === 'confirm') {
+            this.list = this.list.filter(val => val.uid !== uid)
+            this.$api.deleteFriend({ id: uid, roomId }).then(res => {
+              if (res.data.success) {
+                this.$store.dispatch('room/removeRoom', { roomId: roomId }, { root: true })
+              }
+            }).catch(rej => {})
+          }
+          done(action)
+        }
+      }).catch(rej => {})
     }
   }
 }

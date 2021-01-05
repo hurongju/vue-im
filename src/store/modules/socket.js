@@ -14,7 +14,7 @@ const mutations = {
 }
 
 const actions = {
-  createSocket ({ dispatch, commit, state }, data) {
+  createSocket ({ dispatch, commit, state, rootGetters }, data) {
     const socketio = io(cons.url.PREFIX, {
       transports: ['websocket'],
       query: {
@@ -58,7 +58,15 @@ const actions = {
               isTop: 0,
               unReadNum: 1
             }
-            dispatch('room/addRoom', { item: item }, { root: true })
+            if (rootGetters.roomList.some(val => val.roomId === item.roomId)) {
+              dispatch('room/updateLastMsg', { roomId, lastMsg, lastMsgTime, name, unReadNum: 1 }, { root: true })
+            } else {
+              dispatch('room/addRoom', { item: item }, { root: true })
+            }
+            dispatch('room/removeExpiredRoomIdList', roomId, { root: true })
+          } else if (data.cmd === 3) { // 删除好友成功消息
+            const { roomId } = data
+            dispatch('room/addExpiredRoomIdList', roomId, { root: true })
           }
           break
         }

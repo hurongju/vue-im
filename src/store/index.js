@@ -33,6 +33,7 @@ const store = new Vuex.Store({
     messageList: state => state.chat.messageList,
     socket: state => state.socket.socket,
     roomList: state => state.room.roomList,
+    expiredRoomIdList: state => state.room.expiredRoomIdList,
     activeRoomId: state => state.room.activeRoomId,
     title: state => state.title,
     totalUnReadNum: state => { // 总消息未读数
@@ -41,6 +42,9 @@ const store = new Vuex.Store({
         num += val.unReadNum
       })
       return num
+    },
+    isExpired: state => { // 会话是否被删除(被好友删除的本地会话)
+      return state.room.expiredRoomIdList.indexOf(state.room.activeRoomId) > -1
     }
   },
   mutations: {
@@ -49,7 +53,7 @@ const store = new Vuex.Store({
     }
   },
   plugins: [createPersistedState({
-    paths: ['room.roomList', 'user.username', 'user.avatarUrl', 'room.activeRoomId', 'title', 'totalUnReadNum']
+    paths: ['room.roomList', 'user.username', 'user.avatarUrl', 'room.activeRoomId', 'title', 'totalUnReadNum', 'room.expiredRoomIdList']
   })]
 })
 

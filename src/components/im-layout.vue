@@ -28,7 +28,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['username', 'avatarUrl', 'socket']),
+    ...mapGetters(['username', 'avatarUrl', 'socket', 'isExpired']),
     isTabPage () {
       return this.$route.meta && this.$route.meta.tp
     }
@@ -57,6 +57,9 @@ export default {
   },
   methods: {
     msgHandler (data) {
+      if (this.isExpired) {
+        return
+      }
       let content = data.content
       if (data.type === cons.messageType.IMAGE) {
         content = '[图片]'

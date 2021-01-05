@@ -73,7 +73,7 @@ export function updateUnReadMsg (prefix, num, roomId, type = cons.updateUnreadMe
 /**
  * updateLastMsg 更新最后一条消息内容
  */
-export function updateLastMsg (prefix, { lastMsg, roomId, lastMsgTime, name }) {
+export function updateLastMsg (prefix, { lastMsg, roomId, lastMsgTime, name, unReadNum = 0 }) {
   if (!roomId) {
     return
   }
@@ -86,7 +86,7 @@ export function updateLastMsg (prefix, { lastMsg, roomId, lastMsgTime, name }) {
       name: name,
       nickname: null,
       isTop: 0,
-      unReadNum: 0
+      unReadNum: 1
     })
     return
   } else {
@@ -96,6 +96,7 @@ export function updateLastMsg (prefix, { lastMsg, roomId, lastMsgTime, name }) {
       if (val.roomId === roomId) {
         val.lastMsg = lastMsg
         val.lastMsgTime = lastMsgTime
+        val.unReadNum += unReadNum
         activeIndex = index
         activeVal = JSON.parse(JSON.stringify(val))
       }
@@ -104,4 +105,43 @@ export function updateLastMsg (prefix, { lastMsg, roomId, lastMsgTime, name }) {
     data.unshift(activeVal)
   }
   localStorage.setItem(`${prefix}${cons.ROOM_LIST_KEY}`, JSON.stringify(data))
+}
+
+/**
+ * getExpiredRoomIdList 获取过期会话ID列表
+ */
+export function getExpiredRoomIdList (prefix) {
+  let data = []
+  try {
+    data = JSON.parse(localStorage.getItem(`${prefix}${cons.EXPIRED_ROOM_ID_LIST_KEY}`) || '[]')
+  } catch {}
+  return data
+}
+
+/**
+ * addExpiredRoomIdList 添加过期会话ID列表
+ */
+export function addExpiredRoomIdList (prefix, data) {
+  const list = getExpiredRoomIdList(prefix)
+  if (list.indexOf(data) > -1) {
+    return false
+  } else {
+    list.push(data)
+    localStorage.setItem(`${prefix}${cons.EXPIRED_ROOM_ID_LIST_KEY}`, JSON.stringify(list))
+    return true
+  }
+}
+
+/**
+ * removeExpiredRoomIdList 移除过期会话ID列表
+ */
+export function removeExpiredRoomIdList (prefix, data) {
+  let list = getExpiredRoomIdList(prefix)
+  if (list.indexOf(data) > -1) {
+    list = list.filter(val => val !== data)
+    localStorage.setItem(`${prefix}${cons.EXPIRED_ROOM_ID_LIST_KEY}`, JSON.stringify(list))
+    return true
+  } else {
+    return false
+  }
 }

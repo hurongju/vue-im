@@ -76,7 +76,7 @@ export default {
           if (action === 'confirm') {
             this.$api.addFriend({ toId: item.id, toName: item.username }).then(res => {
               if (res.data.success) {
-                console.log('res.data.data :>> ', res.data.data)
+                this.$toast('发送成功')
               }
             }).catch(rej => {})
           }

@@ -15,7 +15,7 @@
         :avatar="item.avatarUrl"
         :name="item.fromName"
         :date-time="item.updateTime"
-        :desc="statusDesc[item.addStatus - 1]"
+        :desc="statusDesc[item.addStatus]"
         :dateFormatType="dateFormatType"
         @agree="agree(item)"
         :menu-options="menuOptions"
@@ -50,7 +50,7 @@ export default {
   },
   data () {
     return {
-      statusDesc: ['同意', '已同意'],
+      statusDesc: ['已删除', '同意', '已同意'],
       dateFormatType: cons.dateFormatType.SIMPLE,
       menuOptions: {
         data: [

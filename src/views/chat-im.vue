@@ -188,7 +188,8 @@ export default {
         sendSocketId: this.socket.id
       }).then(res => {
         if (res.data.success) {
-          // 发送回执
+        } else {
+          res.data.data === 1 && this.setExpiredRoomId()
         }
       }).catch(rej => {})
     },
@@ -240,8 +241,7 @@ export default {
       const _data = _.cloneDeep(data)
       messageHandler(_data)
       this.msgList.push(_data)
-      const errorNumber = 20
-      if (this.scrollContainer.scrollHeight - this.scrollContainer.clientHeight - this.scrollContainer.scrollTop < errorNumber) {
+      if (this.scrollContainer.scrollHeight - this.scrollContainer.clientHeight - this.scrollContainer.scrollTop < cons.MAX_SCROLL_INTO_VIEW_HEIGHT) {
         this.$nextTick(() => {
           this.scrollContainer.scrollTop = this.listLayout.clientHeight
         })
@@ -285,6 +285,10 @@ export default {
       setTimeout(() => {
         this.scrollContainer.scrollTop = this.listLayout.scrollHeight
       }, 300)
+    },
+    setExpiredRoomId () {
+      this.$store.dispatch('room/addExpiredRoomIdList', this.activeRoomId)
+      this.$toast({ message: '非好友不能发送消息', icon: 'warning' })
     }
   }
 }
