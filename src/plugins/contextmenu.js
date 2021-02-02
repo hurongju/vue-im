@@ -35,10 +35,12 @@ function setMenu ({ el, menuOptions, bottom }) {
   el.contextmenuHandler = (e) => {
     e.preventDefault()
   }
-  el.addEventListener('touchstart', el.touchstartHandler)
-  el.addEventListener('touchmove', el.touchmoveHandler)
-  el.addEventListener('touchend', el.touchendHandler)
-  el.addEventListener('contextmenu', el.contextmenuHandler)
+  on(el, {
+    touchstart: el.touchstartHandler,
+    touchmove: el.touchmoveHandler,
+    touchend: el.touchendHandler,
+    contextmenu: el.contextmenuHandler
+  })
 }
 
 /**
@@ -91,9 +93,11 @@ function addMenu (pos, menuOptions, bottom, el) {
   menu.clickHandler = (e) => {
     menuOptions.handler.call(undefined, e.target.getAttribute('data-id'), el)
     el.style.background = null
-    menu.removeEventListener('touchstart', menu.touchstartHandler)
-    menu.removeEventListener('click', menu.clickHandler)
-    menu.removeEventListener('contextmenu', menu.contextmenuHandler)
+    off(menu, {
+      touchstart: menu.touchstartHandler,
+      click: menu.clickHandler,
+      contextmenu: menu.contextmenuHandler
+    })
     menu.getElementsByClassName('vue-contextmenu__content')[0].style.transform = 'scale(0)'
     setTimeout(() => {
       menu.parentElement.removeChild(menu)
@@ -117,9 +121,11 @@ function addMenu (pos, menuOptions, bottom, el) {
       }, 200)
     }
   }
-  menu.addEventListener('click', menu.clickHandler)
-  menu.addEventListener('touchstart', menu.touchstartHandler)
-  menu.addEventListener('contextmenu', menu.contextmenuHandler)
+  on(menu, {
+    click: menu.clickHandler,
+    touchstart: menu.touchstartHandler,
+    contextmenu: menu.contextmenuHandler
+  })
   addBackColorEvent(menu)
   document.body.appendChild(menu)
   setTimeout(() => {
@@ -138,13 +144,40 @@ function addBackColorEvent (menu) {
       item.style.background = '#ccc'
     }
     menu[`itemTouchendHandler${index}`] = () => {
-      item.removeEventListener('touchstart', menu[`itemTouchstartHandler${index}`])
-      item.removeEventListener('touchend', menu[`itemTouchendHandler${index}`])
+      off(item, {
+        touchstart: menu[`itemTouchstartHandler${index}`],
+        touchend: menu[`itemTouchendHandler${index}`]
+      })
       item.style.background = null
     }
-    item.addEventListener('touchstart', menu[`itemTouchstartHandler${index}`])
-    item.addEventListener('touchend', menu[`itemTouchendHandler${index}`])
+    on(item, {
+      touchstart: menu[`itemTouchstartHandler${index}`],
+      touchend: menu[`itemTouchendHandler${index}`]
+    })
   })
+}
+
+function on (el, eventObj) {
+  if (!(el instanceof HTMLElement)) {
+    return
+  }
+  if (Object.prototype.toString.call(eventObj) === '[object Object]') {
+    for (const eventName in eventObj) {
+      el.addEventListener(eventName, eventObj[eventName])
+    }
+  }
+}
+
+function off (el, eventObj) {
+  if (!(el instanceof HTMLElement)) {
+    return
+  }
+  if (Object.prototype.toString.call(eventObj) === '[object Object]') {
+    for (const eventName in eventObj) {
+      el.removeEventListener(eventName, eventObj[eventName])
+      delete eventObj[eventName]
+    }
+  }
 }
 
 export default {
@@ -158,10 +191,12 @@ export default {
         setMenu({ el, menuOptions, ...options })
       },
       componentUpdated (el, binding) {
-        el.removeEventListener('touchstart', el.touchstartHandler)
-        el.removeEventListener('touchmove', el.touchmoveHandler)
-        el.removeEventListener('touchend', el.touchendHandler)
-        el.removeEventListener('contextmenu', el.contextmenuHandler)
+        off(el, {
+          touchstart: el.touchstartHandler,
+          touchmove: el.touchmoveHandler,
+          touchend: el.touchendHandler,
+          contextmenu: el.contextmenuHandler
+        })
         const menuOptions = binding.value
         if (typeof menuOptions === 'undefined') {
           return
@@ -169,7 +204,9 @@ export default {
         setMenu({ el, menuOptions, ...options })
       },
       unbind (el) {
-        el.removeEventListener('contextmenu', el.contextmenuHandler)
+        off(el, {
+          contextmenu: el.contextmenuHandler
+        })
       }
     })
   }
